@@ -1,0 +1,10 @@
+<launch>
+    <!-- <include file="$(find flivis)/launch/mapping_icuas.launch"/> -->
+    <!-- <node pkg="airo_detection" type="twoD_fruit_detector.py" name="twoDFruitDtector"/> -->
+    <param name="use_sim_time" value="true" />
+    <node pkg="airo_detection" type="threeDim_fruit_generator.py" name="threeDFruitGenerator" output="screen"/>
+    <!-- <node pkg="your_package" type="your_script.py" name="your_node_name" output="screen">
+    </node> -->
+    <!-- <arg name="bag_file" default="/home/kin/bags/ntu_viral/eee_01/eee_01.bag" /> -->
+
+</launch>

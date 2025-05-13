@@ -1,0 +1,87 @@
+@startuml
+
+!theme plain
+' !include https://raw.githubusercontent.com/patrik-csak/one-dark-plantuml-theme/v1.0.1/theme.puml
+
+
+' #Pink:if (Graphviz installed?) then (yes)
+'   #pink:process all\ndiagrams;
+' else (no)
+'   :process only
+'   __sequence__ and __activity__ diagrams;
+' endif
+
+
+|#GreenYellow|tsp_node.py|
+
+start
+
+
+:main();
+
+partition #Gray "listener"{
+    :Listener();
+    :rospy.init_node();
+    :odometry_callback(ros_collion_free_sorted_cities_g);
+    :plant_beds_callback();
+}
+
+partition #SkyBlue "plant_beds_callback"{
+    while (receive_bed_g ?) is (Received)
+        :return();
+    endwhile(path_gen)
+}
+
+
+
+partition #LightBlue "path_gen_all_layers()"{
+:path_gen_all_layers();
+
+}
+
+
+partition #LightBlue "path_gen_all_layers()"{
+    |#DarkTurquoise|point_gen_by_bed_num.py|
+    ' common::MeasureGroup measures_;// sync IMU and lidar scan
+    :path_gen_all_layers(plant_beds_arr, init_pose);
+    while (has_bed ?) is (Gen)
+        :one_point_gen_by_bed_num_all_layers(cur_bed);
+    endwhile(way_points[])
+    :greedy_tsp(way_points[]);
+    note right
+    tsp_lib.py
+    end note
+    :check_collisio(sorted_way_points[]);
+    note right
+    tsp_lib.py
+    end note
+    :return(ros_collion_free_sorted_cities_g);
+}
+
+|#YellowGreen|tsp_node.py|
+:odometry_callback();
+while(has_way_point ?) is (Pub)
+    :pub(last_way_point);
+endwhile(end)
+
+if(dist < 0.2 ?) is (dist < 0.2) then
+    partition #LightBlue "到达curr_goal"{
+        if(has_way_point ?)
+            :pop(ros_collion_free_sorted_cities_g[0]);
+        elseif()
+            :print(列表为空);
+        endif
+    }
+elseif()
+    :to_main();
+endif
+
+
+
+
+stop
+
+end
+
+@enduml
+
